@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.manger.role.mapper.RoleMapper" >
+
+    <select id="findRolePage" parameterType="page" resultType="role">
+       select * from base_role where 1=1
+       <if test="params.roleName!=null and params.roleName!=''">
+             AND name like CONCAT('%',#{params.roleName},'%')
+       </if>
+    </select>
+   
+   
+   <!-- 更新角色菜单中间表 --> 
+  <insert id="insertIntoRoleMenu" parameterType="map">
+     
+     insert into base_role_menu(id,version,role_id,menu_id)values(#{id},#{version},#{roleId},#{menuId})
+  
+  </insert>
+  <!-- 删除角色菜单中间表的数据 -->
+  <delete id="deleteRoleMenu" parameterType="map">
+     delete from base_role_menu where role_id=#{roleId}
+  </delete>
+  
+  
+  <!-- 删除原来的用户和角色的绑定关系 -->
+  <delete id="deleteRoleAndUser" parameterType="map">
+     delete from base_user_role where user_id=#{userId}
+  </delete>
+
+  <!-- 插入用户和角色的绑定关系 -->
+  <insert id="insertRoleAndUser" parameterType="map">
+     insert into base_user_role(id,user_id,role_id)values(#{id},#{userId},#{roleId})
+  </insert>
+  
+</mapper>
+
+

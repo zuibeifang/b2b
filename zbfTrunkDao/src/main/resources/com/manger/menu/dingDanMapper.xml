@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.manger.cai.mapper.DingDanMapper" >
+	<select id="findDingDan" parameterType="page" resultType="com.manger.entity.cai.DingDan">
+		select id,goods_count,goods_count ,total_money,order_status,pay_status,createtime,updatetime from tb_order 
+	</select>	
+</mapper>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.manger.user.mapper.UserMapper" >
+  
+  <resultMap type="user" id="user">
+     <result column="USERNAME" jdbcType="VARCHAR" property="userName"/>
+     <result column="ID" jdbcType="DECIMAL" property="id"/>
+     <result column="VERSION" jdbcType="DECIMAL" property="version"/>
+     <result column="LOGINNAME" jdbcType="VARCHAR" property="loginName"/>
+     <result column="PASSWORD" jdbcType="VARCHAR" property="passWord"/>
+     <result column="BUMEN" jdbcType="VARCHAR" property="buMen"/>
+     <result column="TEL" jdbcType="VARCHAR" property="tel"/>
+     <result column="SALT" jdbcType="VARCHAR" property="salt"/>
+     <result column="ROLE_ID" jdbcType="DECIMAL" property="roleId"/>
+     <result column="CREATETIME" jdbcType="TIMESTAMP" property="createTime"/>
+     <result column="IMAGEURL" jdbcType="TIMESTAMP" property="imageUrl"/>
+  </resultMap>
+  
+  
+  <select id="getByUserName" resultType="user" parameterType="String">
+       select bu.*,bur.role_id from base_user bu inner join base_user_role bur on bu.id=bur.user_id  where bu.loginName = #{loginName}
+  </select>
+  
+  <select id="get" resultType="user" parameterType="long">
+      select * from base_user where id=#{id}
+  </select>
+  
+  <insert id="insert" parameterType="user">
+      insert into base_user (id,version,userName,loginName,passWord,buMen,salt,createTime) values(
+         #{id},#{version},#{userName},#{loginName},#{passWord},#{buMen},#{salt},NOW()
+      )
+  </insert>
+  
+  <update id="update" parameterType="user">
+      update base_user set VERSION=VERSION+1,
+      USERNAME=#{userName,jdbcType=VARCHAR},
+      LOGINNAME=#{loginName,jdbcType=VARCHAR},
+      PASSWORD=#{passWord,jdbcType=VARCHAR},
+      TEL=#{tel,jdbcType=VARCHAR},
+      BUMEN=#{buMen,jdbcType=VARCHAR},
+      SALT=#{salt,jdbcType=VARCHAR}
+      WHERE ID=#{id,jdbcType=DECIMAL} AND VERSION=#{version,jdbcType=DECIMAL}
+  </update>
+ 
+  <delete id="delete" parameterType="long">
+      delete from base_user where id=#{id,jdbcType=DECIMAL}
+  </delete>
+  
+<!--  
+（com.manger.common.mybatis.QueryInterceptor）
+ <select id="findUserPage" parameterType="map" resultType="user">
+      select bu.*,bui.imageUrl from base_user bu inner join base_user_image bui 
+      on bu.id=bui.user_id where 1=1 
+      <if test="userName!=null and userName !=''">
+      AND bu.userName=#{userName,jdbcType=VARCHAR}
+      </if>
+      <if test="id!=null">
+      AND bu.id=#{id,jdbcType=DECIMAL}
+      </if>
+      <if test="loginName!=null and loginName !=''">
+      AND bu.loginName LIKE CONCAT('%',#{loginName},'%')
+      </if>
+      <if test="buMen!=null and buMen !=''">
+      AND bu.buMen=#{buMen,jdbcType=VARCHAR}
+      </if>
+      <if test="tel!=null and tel !=''">
+      AND bu.TEL LIKE CONCAT('%',#{tel,jdbcType=VARCHAR},'%')
+      </if>
+  </select> -->
+  
+  
+  <!-- 使用分页插件二（com.manger.common.mybatis.page2.ItsMeQueryInterceptor）的用法 -->
+  <select id="findUserPage" parameterType="page" resultType="user">
+      select bu.*,bui.imageUrl from base_user bu left join base_user_image bui 
+      on bu.id=bui.user_id where 1=1 
+      <if test="params.userName!=null and params.userName !=''">
+      AND bu.userName=#{params.userName,jdbcType=VARCHAR}
+      </if>
+      <if test="params.id!=null">
+      AND bu.id=#{params.id,jdbcType=DECIMAL}
+      </if>
+      <if test="params.loginName!=null and params.loginName !=''">
+      AND bu.loginName LIKE CONCAT('%',#{params.loginName},'%')
+      </if>
+      <if test="params.buMen!=null and params.buMen !=''">
+      AND bu.buMen=#{params.buMen,jdbcType=VARCHAR}
+      </if>
+      <if test="params.tel!=null and params.tel !=''">
+      AND bu.TEL LIKE CONCAT('%',#{params.tel,jdbcType=VARCHAR},'%')
+      </if>
+  </select>
+  
+  
+  <insert id="saveAddUser" parameterType="map">
+      insert into base_user (id,version,userName,loginName,passWord,buMen,salt,createTime) values(
+         #{id},#{version},#{userName},#{loginName},#{passWord},#{buMen},#{salt},NOW()
+      )
+  </insert>
+  
+  
+</mapper>

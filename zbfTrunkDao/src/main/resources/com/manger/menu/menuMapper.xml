@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.manger.menu.mapper.MenuMapper" >
+
+  <resultMap type="menu" id="menu">
+     <result column="CODE" jdbcType="VARCHAR" property="code"/>
+     <result column="ID" jdbcType="DECIMAL" property="id"/>
+     <result column="VERSION" jdbcType="DECIMAL" property="version"/>
+     <result column="MENUNAME" jdbcType="VARCHAR" property="menuName"/>
+     <result column="URL" jdbcType="VARCHAR" property="url"/>
+     <result column="PARENTCODE" jdbcType="VARCHAR" property="parentCode"/>
+     <result column="LEVAL" jdbcType="DECIMAL" property="leval"/>
+     <result column="IMAGEPATH" jdbcType="DECIMAL" property="imagePath"/>
+     <result column="CREATETIME" jdbcType="TIMESTAMP" property="createTime"/>
+  </resultMap>
+  
+  <sql id="base">
+  ID,CODE,VERSION,MENUNAME,URL,PARENTCODE,LEVAL,IMAGEPATH,CREATETIME
+  </sql>
+  
+  <update id="update" parameterType="menu">
+     UPDATE BASE_MENU SET
+     CODE=#{code},
+     VERSION=VERSION+1,
+     MENUNAME=#{menuName},
+     url=#{url},
+     PARENTCODE=#{parentCode},
+     LEVAL=#{leval},
+     IMAGEPATH=#{imagePath},
+     CREATETIME=NOW()
+     WHERE 1=1 AND ID=#{id}
+  </update>
+  
+  <select id="getMenus" parameterType="map" resultType="menu">
+    <!-- SELECT BM.ID,BM.MENUNAME,BM.IMAGEPATH,BM.CODE,BM.PARENTCODE,BM.LEVAL,BM.URL 
+    FROM base_menu bm        
+	where 1=1 
+	<if test="leval!=null and leval!=''">
+	   and bm.leval=#{leval}
+	</if>
+	<if test="parentCode!=null and parentCode!=''">
+	   and parentCode=#{parentCode}
+	</if> -->
+	 select BM.ID,BM.MENUNAME,BM.IMAGEPATH,BM.CODE,BM.PARENTCODE,BM.LEVAL,BM.URL from base_user bu inner join base_user_role bur on bu.id=bur.user_id          
+                           inner join base_role_menu brm on brm.role_id=bur.role_id        
+                           inner join base_menu bm on bm.id=brm.menu_id
+                           
+                           where 1=1 
+                           <if test="leval!=null and leval!=''">
+							   and bm.leval=#{leval}
+							</if>
+							<if test="parentCode!=null and parentCode!=''">
+							   and bm.parentCode=#{parentCode}
+							</if>
+                            <if test="userId!=null and userId!=''">
+                               and bu.id=#{userId}                               
+                            </if>
+                           
+  </select>
+   
+   <select id="getUserMenus" parameterType="map" resultType="menu">
+    SELECT BM.ID,BM.MENUNAME,BM.IMAGEPATH,BM.CODE,BM.PARENTCODE,BM.LEVAL,BM.URL FROM BASE_USER_ROLE BUR 
+	INNER JOIN BASE_ROLE_MENU BRM ON BUR.ROLE_ID=BRM.ROLE_ID
+	INNER JOIN BASE_MENU BM       ON BM.ID=BRM.MENU_ID
+	WHERE 1=1 
+	<if test="userId!=null and userId!=''">
+	   AND BUR.USER_ID=#{userId} 
+	</if>
+	<if test="leval!=null and leval!=''">
+	   AND BM.LEVAL=#{leval}
+	</if>
+	<if test="parentCode!=null and parentCode!=''">
+	   AND PARENTCODE=#{parentCode}
+	</if> 
+  </select>
+   
+   <insert id="saveMenu" parameterType="map">
+      insert into base_menu(
+      <include refid="base"/>
+      ) values(
+        #{id},
+        #{code},
+        #{version},
+        #{menuName},
+        #{url},
+        #{parentCode},
+        #{leval},
+        #{imagePath},
+        NOW()
+      )
+   </insert>
+   
+   
+   <insert id="insert" parameterType="menu">
+      insert into base_menu(
+      <include refid="base"/>
+      ) values(
+        #{id},
+        #{code},
+        #{version},
+        #{menuName},
+        #{url},
+        #{parentCode},
+        #{leval},
+        #{imagePath},
+        NOW()
+      )
+   </insert>
+   
+   
+   <select id="getMenuByItems" parameterType="map" resultType="menu">
+       select <include refid="base"/> from base_menu where parentCode=#{parentCode} and menuName=#{menuName}
+   </select>
+   
+   <select id="get" parameterType="long" resultType="menu">
+       select <include refid="base"/> from base_menu where id=#{id}
+   </select>
+   
+   <delete id="deleteMuensById" parameterType="list">
+       delete from base_menu where id in
+       <foreach collection="list" item="item" open="(" close=")" separator=",">
+       #{item.id}
+       </foreach>
+   </delete>
+   
+   <delete id="deleteRoleMenuRelation" parameterType="map">
+       delete from base_role_menu where role_id=#{roleId}
+       and menu_id in
+       <foreach collection="list" item="item" open="(" close=")" separator=",">
+       #{item.id}
+       </foreach>
+   </delete>
+   
+   <select id="findMenuByCode" parameterType="map" resultType="menu">
+       select <include refid="base"/> from base_menu where 1=1
+       <if test="id != null">
+         AND id=#{id}
+       </if>
+   </select>
+   <!-- 获取所有的用户信息和角色信息和菜单信息到缓存中 -->
+   <select id="getAllUserRoleMenu" parameterType="map" resultType="map">
+       
+   </select>
+   
+   <!-- 获取所有的菜单信息 -->
+   <select id="listMenuMap" parameterType="map" resultType="string">
+       select url from base_menu
+   </select>
+   
+   <!-- 查询用户的权限信息 -->
+   <select id="listMenuUser" parameterType="map" resultType="String">
+       
+select  bm.url from base_user_role bur inner join base_role_menu brm on bur.role_id =brm.role_id 
+              inner join base_menu bm on bm.id=brm.menu_id
+              where bur.user_id=#{userId} 
+              
+   </select>
+   
+   
+</mapper>

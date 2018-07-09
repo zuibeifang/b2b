@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.manger.cai.mapper.UpLoadMapper" >
+		<insert id="addLogoImage" parameterType="baseImage">
+			insert into base_image(id,name,virtualUrl,url,userId,goodsId) values(#{id},#{name},#{virtualUrl},#{url},#{userId},#{goodsId})
+		</insert>	
+		
+		<select id="selectLogo" parameterType="java.lang.Long" resultType="java.lang.String">
+			select virtualUrl from base_image where id=#{logoMsgId}
+		</select>
+		
+		<insert id="insertGoods" parameterType="goods">
+			insert into tb_goods(id,name,product_id,up_down,price,descript,imgUrl,stock,createtime,updatetime) 
+			values(#{id},#{name},2,0,#{price},#{descript},#{imgUrl},10,NOW(),NOW())
+		</insert>
+		
+		<update id="updateImage" parameterType="map">
+			update base_image set goodsId=#{goodsId} where id=#{id}
+		</update>
+		
+		<update id="updateGoods" parameterType="map">
+			update tb_goods set imgUrl=#{url} where id=#{goodsId}
+		</update>
+		
+</mapper>
