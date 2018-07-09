@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+                           http://www.springframework.org/schema/tx 
+                           http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+                           http://www.springframework.org/schema/context 
+                           http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+    
+       <!-- 读写数据源 -->
+   <bean id="dataSourceRW" class="org.apache.commons.dbcp.BasicDataSource">
+       <property name="driverClassName" value="${jdbc.driver}"></property>
+       <property name="url" value="${jdbc.url}"></property>
+       <property name="username" value="${jdbc.userName}"></property>
+       <property name="password" value="${jdbc.password}"></property>
+       <!--额外配置-->  
+       <property name="maxActive" value="${jdbc.maxActive}"/>
+       <property name="initialSize" value="${jdbc.initialSize}"/>
+       <property name="maxIdle" value="${jdbc.maxIdle}"/>
+       
+       <property name="defaultAutoCommit" value="true"></property>
+   </bean>
+                           
+    <bean id="dataSource" class="com.manger.core.readWritPart.DynamicDataSource">
+        <property name="targetDataSources">
+           <map>
+              <entry key="dataSourceRW" value-ref="dataSourceRW"></entry>  
+              <entry key="dataSourceR1" value-ref="dataSourceR1"></entry>
+           </map>
+        </property>
+        <property name="defaultTargetDataSource" ref="dataSourceRW"/>
+    </bean>
+    
+    
+    <import resource="Spring-dataSource-read.xml"/>
+</beans>                           

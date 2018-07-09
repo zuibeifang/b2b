@@ -1,0 +1,1 @@
+这个包下边的代码是基于  memcahed的session共享
