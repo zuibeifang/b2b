@@ -23,26 +23,26 @@ public class CaiServiceImpl implements CaiService {
 	
 	
 
-	@Override
+
 	public void findCaiPage(Page<Goods> page, Map<String, Object> filter) {
 		page.setParams(filter);
 		caiDao.findPage(page, "findCaiPage");
 	}
 
-	@Override
+
 	public List<Map<String, Object>> huizongList() {
 		// TODO Auto-generated method stub
 		return caiDao.huizongList();
 	}
 
-	@Override
+	
 	public void dingDanList(Page<DingDan> page, Map<String, Object> filter) {
 		page.setParams(filter);
 		dingDanDao.findPage(page, "findDingDan");
 		
 	}
 
-	@Override
+
 	public void insertAll(List<Goods> list) {
 		// TODO Auto-generated method stub
 		caiDao.insertAll(list);
