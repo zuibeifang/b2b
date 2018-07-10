@@ -7,6 +7,9 @@ import com.manger.core.entity.Page;
 import com.manger.entity.cai.DingDan;
 import com.manger.entity.cai.Goods;
 
+/**
+ * 这是一些注释
+ */
 public interface CaiService {
 
 	public void findCaiPage(Page<Goods> page, Map<String, Object> filter);
